@@ -127,9 +127,10 @@ class Tf2AiApp:
         self._root.after(50, self._root.destroy)
 
     def run(self) -> None:
+        emergency_key = str(self._cfg["control"]["emergency_stop_key"]).upper()
         print(
             "TF2 AI controller ready (local/private server use only). "
-            "Use Start/Stop buttons or F3 toggle, F9 to emergency stop."
+            f"Use Start/Stop buttons or F3 toggle, {emergency_key} to emergency stop."
         )
         self._root.mainloop()
 

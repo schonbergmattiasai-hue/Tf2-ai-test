@@ -20,10 +20,6 @@ class ControlConfig:
     keybinds: Dict[str, str]
 
 
-class EmergencyStop(Exception):
-    pass
-
-
 class InputController:
     def __init__(self, config: ControlConfig) -> None:
         self._config = config
