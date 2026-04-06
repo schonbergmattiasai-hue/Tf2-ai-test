@@ -3,7 +3,7 @@ from __future__ import annotations
 import threading
 import time
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Callable, Dict, Optional
 
 import pydirectinput
 from pynput import keyboard
@@ -15,6 +15,7 @@ class ControlConfig:
     smoothing: float
     max_pixels_per_step: int
     min_action_interval_ms: int
+    toggle_key: str
     emergency_stop_key: str
     keybinds: Dict[str, str]
 
@@ -27,18 +28,37 @@ class InputController:
     def __init__(self, config: ControlConfig) -> None:
         self._config = config
         self._running = True
+        self._active = False
         self._fire_down = False
         self._pressed_keys: set[str] = set()
         self._last_action_time = 0.0
         self._last_dx = 0.0
         self._last_dy = 0.0
         self._listener: Optional[keyboard.Listener] = None
+        self._toggle_callback: Optional[Callable[[], None]] = None
 
     @property
     def running(self) -> bool:
         return self._running
 
-    def start_emergency_listener(self) -> None:
+    @property
+    def active(self) -> bool:
+        return self._active
+
+    def set_active(self, active: bool) -> None:
+        self._active = active
+        if not active:
+            self.hold_fire(False)
+            self.set_movement(False, False, False, False)
+
+    def toggle_active(self) -> None:
+        self.set_active(not self._active)
+
+    def set_toggle_callback(self, callback: Callable[[], None]) -> None:
+        self._toggle_callback = callback
+
+    def start_hotkey_listener(self) -> None:
+        toggle_key = self._config.toggle_key.lower()
         stop_key = self._config.emergency_stop_key.lower()
 
         def on_press(key: keyboard.Key | keyboard.KeyCode) -> None:
@@ -47,6 +67,10 @@ class InputController:
                 name = key.char.lower()
             elif isinstance(key, keyboard.Key):
                 name = key.name.lower()
+            if name == toggle_key:
+                self.toggle_active()
+                if self._toggle_callback is not None:
+                    self._toggle_callback()
             if name == stop_key:
                 self.emergency_stop()
 
@@ -113,6 +137,7 @@ class InputController:
 
     def emergency_stop(self) -> None:
         self._running = False
+        self._active = False
         self.hold_fire(False)
         self.set_movement(False, False, False, False)
         if self._listener is not None:
@@ -128,4 +153,3 @@ class InputController:
 
     def close(self) -> None:
         self.emergency_stop()
-

@@ -17,7 +17,8 @@
   - `ENGAGE` (aim + burst fire),
   - `RECOVER` (scan after target loss, then resume roaming).
 - Sends normal keyboard/mouse input via Windows-safe user input APIs.
-- Supports immediate emergency stop hotkey (`F9` by default).
+- Includes a simple GUI with **Start** / **Stop** controls.
+- Supports **F3** hotkey toggle for start/stop and emergency stop (`F9` by default).
 
 ## Repository layout
 
@@ -87,3 +88,4 @@ python -m tf2_ai.main --config configs/default.yaml
 ```
 
 Emergency stop key is configured by `control.emergency_stop_key` (`f9` by default).
+Start/Stop toggle key is configured by `control.toggle_key` (`f3` by default).

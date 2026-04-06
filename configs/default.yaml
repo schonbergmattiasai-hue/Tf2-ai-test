@@ -23,6 +23,7 @@ control:
   smoothing: 0.25
   max_pixels_per_step: 40
   min_action_interval_ms: 8
+  toggle_key: "f3"
   emergency_stop_key: "f9"
   keybinds:
     forward: "w"
