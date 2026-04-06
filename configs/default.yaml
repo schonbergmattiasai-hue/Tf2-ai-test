@@ -1,0 +1,43 @@
+capture:
+  monitor_index: 1
+  region:
+    left: 0
+    top: 0
+    width: 1920
+    height: 1080
+
+runtime:
+  target_fps: 60
+  loop_sleep_ms: 1
+
+vision:
+  weights_path: "weights/tf2_heavy_enemy.pt"
+  confidence_threshold: 0.45
+  iou_threshold: 0.50
+  infer_every_n_frames: 2
+  enemy_class_names:
+    - enemy
+
+control:
+  sensitivity_scale: 0.35
+  smoothing: 0.25
+  max_pixels_per_step: 40
+  min_action_interval_ms: 8
+  toggle_key: "f3"
+  emergency_stop_key: "f9"
+  keybinds:
+    forward: "w"
+    backward: "s"
+    left: "a"
+    right: "d"
+    fire: "left"
+
+policy:
+  lost_target_timeout_ms: 700
+  recover_duration_ms: 900
+  roam_strafe_interval_ms: 1200
+  roam_scan_interval_ms: 1000
+  roam_scan_pixels: 35
+  fire_hold_ms: 300
+  fire_burst_cooldown_ms: 120
+  aim_tolerance_px: 80
