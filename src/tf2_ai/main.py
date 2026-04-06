@@ -64,7 +64,10 @@ class Tf2AiApp:
 
         hotkey_hint = tk.Label(
             frame,
-            text=f"F3 toggles Start/Stop, {self._cfg['control']['emergency_stop_key'].upper()} exits.",
+            text=(
+                f"{self._cfg['control']['toggle_key'].upper()} toggles Start/Stop, "
+                f"{self._cfg['control']['emergency_stop_key'].upper()} exits."
+            ),
             anchor="w",
         )
         hotkey_hint.pack(pady=(10, 0))
@@ -127,10 +130,11 @@ class Tf2AiApp:
         self._root.after(50, self._root.destroy)
 
     def run(self) -> None:
+        toggle_key = str(self._cfg["control"]["toggle_key"]).upper()
         emergency_key = str(self._cfg["control"]["emergency_stop_key"]).upper()
         print(
             "TF2 AI controller ready (local/private server use only). "
-            f"Use Start/Stop buttons or F3 toggle, {emergency_key} to emergency stop."
+            f"Use Start/Stop buttons or {toggle_key} toggle, {emergency_key} to emergency stop."
         )
         self._root.mainloop()
 
