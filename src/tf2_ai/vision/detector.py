@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, List, Optional, Sequence
 
 import numpy as np
@@ -28,7 +29,18 @@ class Detection:
 class YoloDetector:
     def __init__(self, config: VisionConfig) -> None:
         self._config = config
-        self._model = YOLO(config.weights_path)
+        weights_path = Path(config.weights_path)
+        if not weights_path.exists():
+            raise ValueError(
+                f"YOLO weights file not found: {config.weights_path}. "
+                "Set vision.weights_path to a valid local weights file."
+            )
+        try:
+            self._model = YOLO(config.weights_path)
+        except Exception as exc:
+            raise RuntimeError(
+                f"Failed to load YOLO weights from '{config.weights_path}'."
+            ) from exc
         self._frame_idx = 0
         self._last_detections: List[Detection] = []
 
@@ -79,4 +91,3 @@ class YoloDetector:
         if enemy_detections:
             return max(enemy_detections, key=lambda d: d.confidence)
         return max(detections, key=lambda d: d.confidence)
-
